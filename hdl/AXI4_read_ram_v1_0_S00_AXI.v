@@ -15,7 +15,7 @@
 	)
 	(
 		// Users to add ports here
-
+		output	pwm_out,
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -398,7 +398,18 @@
 	end    
 
 	// Add user logic here
-
+sigpulse #(
+  ._RAM_WIDTH(C_S_AXI_DATA_WIDTH)
+)u_sigpulse(
+  /*input */.io_clk				(S_AXI_ACLK),
+  /*input */.io_rst				(~S_AXI_ARESETN),
+  /*input */.io_en				(slv_reg0[0]),
+  /*input */.pwm_dis			(slv_reg1[0]),
+  /*output*/. io_pulseOut		(pwm_out),		
+  /*input */.io_defaultLevel	(slv_reg2[0]),
+  /*input */.io_pulseWidth		(slv_reg3),
+  /*output*/. pulse_valid		()
+);
 	// User logic ends
 
 	endmodule
