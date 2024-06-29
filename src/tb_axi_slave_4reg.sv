@@ -30,7 +30,7 @@ module tb_AXI4_read_ram();
     wire [1 : 0] s00_axi_rresp;
     wire s00_axi_rvalid;
     reg s00_axi_rready;
-    reg read_data;
+    reg [C_S00_AXI_DATA_WIDTH-1 : 0] read_data;
     // PWM Output
     wire pwm_out;
 
@@ -90,20 +90,21 @@ module tb_AXI4_read_ram();
             wait(s00_axi_awready);
             @(posedge s00_axi_aclk);
             s00_axi_awvalid = 0;
-
+            s00_axi_wvalid = 0;
             // Data write
             s00_axi_wdata = data;
             s00_axi_wstrb = {(C_S00_AXI_DATA_WIDTH/8){1'b1}}; // All bytes are valid
             
             wait(s00_axi_wready);
-            @(posedge s00_axi_aclk);
-            s00_axi_wvalid = 0;
+            
 
             // Wait for write response
             wait(s00_axi_bvalid);
             @(posedge s00_axi_aclk);
             s00_axi_bready = 1;
             @(posedge s00_axi_aclk);
+            // @(posedge s00_axi_aclk);
+            
             s00_axi_bready = 0;
         end
     endtask
@@ -153,6 +154,7 @@ module tb_AXI4_read_ram();
         #100;
 
         // Write to address 0x0
+        axi_write(4'h0c, 32'h54213698);
         axi_write(4'h00, 32'h12345678);
         axi_write(4'h04, 32'h55aa55aa);
         axi_write(4'h08, 32'haa66aa66);
